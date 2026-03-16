@@ -1,0 +1,53 @@
+.keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: #f0f0f0;
+    padding: 15px;
+    border-radius: 10px;
+    max-width: 800px;
+    margin: 20px auto;
+    direction: ltr; /* המקלדת עצמה תמיד משמאל לימין במבנה שלה */
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.key {
+    width: 45px;
+    height: 45px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 14px;
+    color: black;
+    transition: all 0.1s ease;
+}
+
+/* מקשים מיוחדים ורחבים */
+.key.wide { width: 80px; }
+.key.space { width: 300px; }
+
+/* צבעים לתגובות */
+.key.key-correct {
+    background-color: #2ecc71 !important;
+    color: white !important;
+    transform: scale(0.95);
+}
+
+.key.key-wrong {
+    background-color: #e74c3c !important;
+    color: white !important;
+}
+
+.key.key-hint {
+    background-color: #f1c40f !important; /* צהוב או ירוק בהיר למקש שהיה אמור להילחץ */
+    box-shadow: 0 0 10px #f1c40f;
+}

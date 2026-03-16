@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>קלידים - הקלדה עיוורת</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="keyboard.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo-wrapper" onclick="showScreen('home-screen')">
+            <img src="LOGO.png" alt="קלידים לוגו" class="nav-logo-img">
+            <span class="logo-text">קלידים</span>
+        </div>
+        <button class="hamburger">☰</button>
+    </nav>
+
+    <nav id="sidebar" class="sidebar">
+        <a href="#" onclick="showScreen('home-screen')">מסך הבית</a>
+        <a href="#" onclick="showScreen('theory-screen')">תיאוריה</a>
+        <a href="#" id="sidebar-profile-btn" class="hidden" onclick="showScreen('profile-screen')">אזור אישי</a>
+        <a href="#" id="sidebar-login-btn" onclick="showLoginModal()">התחברות</a>
+    </nav>
+
+    <div id="overlay" class="overlay"></div>
+
+    <main id="home-screen">
+        <h1>ברוכים הבאים לקלידים!</h1>
+        <div class="welcome-section" id="welcome-message">
+            <p>שלום אורח</p>
+        </div>
+
+        <img src="typing_animation.gif" alt="אנימציית הקלדה" class="home-animated-gif">
+
+        <div class="levels-container">
+            <button class="level-card easy" onclick="showScreen('game-screen')">
+                <h2>רמה קלה</h2>
+                <p>אותיות בודדות</p>
+            </button>
+            <button class="level-card medium" onclick="showScreen('medium-screen')">
+                <h2>רמה בינונית</h2>
+                <p>מילים בעברית</p>
+            </button>
+            <button class="level-card hard" onclick="showScreen('hard-screen')">
+                <h2>רמה קשה</h2>
+                <p>משפטים וסימני פיסוק</p>
+            </button>
+        </div>
+
+        <div class="login-prompt">
+            <button id="main-login-btn" class="action-btn" onclick="showLoginModal()">התחברות</button>
+            <button id="main-profile-btn" class="action-btn hidden" onclick="showScreen('profile-screen')">לאזור האישי שלך</button>
+        </div>
+    </main>
+
+    <section id="game-screen" class="hidden">
+        <button class="exit-btn" onclick="exitGame()">✖ חזרה לתפריט</button>
+        <div id="start-overlay" class="overlay-box">
+            <h2>רמה קלה: אותיות</h2>
+            <p>בשלב זה יופיעו אותיות אקראיות במרכז המסך.<br>עליכם להקיש עליהן הכי מהר שאפשר.<br>זמן המשחק: 20 שניות.</p>
+            <button class="action-btn" onclick="startGame()">התחל משחק</button>
+        </div>
+        <div id="stats-bar" class="game-header hidden">
+            <div class="stat-box">זמן: <span id="timer">20</span></div>
+            <div class="stat-box">הצלחות: <span id="success-count">0</span></div>
+            <div class="stat-box">שגיאות: <span id="error-count">0</span></div>
+        </div>
+        <div id="target-area" class="target-container hidden">
+            <div id="target-letter" class="big-letter">?</div>
+        </div>
+        <div class="keyboard-container" id="keyboard-easy"></div>
+        <div id="results-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>סיכום סיבוב</h2>
+                <div id="final-stats"></div>
+                <button class="action-btn" onclick="resetGame()">נסה שוב</button>
+                <button class="action-btn secondary" onclick="backToHome()">מסך הבית</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="theory-screen" class="hidden">
+        <div class="theory-container">
+            <h1>איך ללמוד הקלדה עיוורת?</h1>
+            <div class="theory-content">
+                <p>הסוד הוא לשמור על אצבעות "הבית" (ח, י, ע, כ) ולא להסתכל על המקלדת!</p>
+                <div class="hand-image-placeholder">
+                    <p>עמדת מוצא של הידיים:</p>
+                    <div class="mock-image">🖐️ 🎹 🖐️</div>
+                </div>
+                <ul class="theory-steps">
+                    <li><strong>שלב 1:</strong> הנח את האצבעות על שורת המקשים האמצעית.</li>
+                    <li><strong>שלב 2:</strong> כל אצבע אחראית על אזור מסוים.</li>
+                    <li><strong>שלב 3:</strong> תרגל, תרגל, תרגל!</li>
+                </ul>
+            </div>
+            <button class="action-btn" onclick="showScreen('home-screen')">חזרה למסך הבית</button>
+        </div>
+    </section>
+
+    <section id="medium-screen" class="hidden">
+        <button class="exit-btn" onclick="exitGameMedium()">✖ חזרה לתפריט</button>
+        <div id="start-overlay-medium" class="overlay-box">
+            <h2>רמה בינונית: מילים</h2>
+            <p>עליכם להקליד מילים שלמות.<br>אות נכונה תהפוך לירוקה, טעות תהפוך לאדומה.<br>בונוס: מילה מושלמת שווה ניקוד כפול!</p>
+            <button class="action-btn" onclick="startMediumGame()">התחל משחק</button>
+        </div>
+        <div id="stats-bar-medium" class="game-header hidden">
+            <div class="stat-box">זמן: <span id="timer-medium">40</span></div>
+            <div class="stat-box">ניקוד: <span id="score-medium">0</span></div>
+        </div>
+        <div id="target-area-medium" class="target-container hidden">
+            <div id="word-display" class="word-wrapper"></div>
+        </div>
+        <div class="keyboard-container" id="keyboard-medium"></div>
+        <div id="results-modal-medium" class="modal hidden">
+            <div class="modal-content">
+                <h2>סיכום סיבוב - בינוני</h2>
+                <div id="final-stats-medium"></div>
+                <button class="action-btn" onclick="resetMediumGame()">נסה שוב</button>
+                <button class="action-btn secondary" onclick="backToHome()">מסך הבית</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="hard-screen" class="hidden">
+        <button class="exit-btn" onclick="exitGameHard()">✖ חזרה לתפריט</button>
+        <div id="start-overlay-hard" class="overlay-box">
+            <h2>רמה קשה: משפטים</h2>
+            <p>כאן מתרגלים הקלדה אמיתית.<br>זמן המשחק: 60 שניות.</p>
+            <button class="action-btn" onclick="startHardGame()">התחל משחק</button>
+        </div>
+        <div id="stats-bar-hard" class="game-header hidden">
+            <div class="stat-box">זמן: <span id="timer-hard">60</span></div>
+            <div class="stat-box">תווים: <span id="chars-count-hard">0</span></div> 
+            <div class="stat-box">דיוק: <span id="accuracy-hard">100</span>%</div>
+        </div>
+        <div id="target-area-hard" class="target-container hidden">
+            <div id="sentence-display" class="sentence-wrapper"></div>
+        </div>
+        <div class="keyboard-container" id="keyboard-hard"></div>
+        <div id="results-modal-hard" class="modal hidden">
+            <div class="modal-content">
+                <h2>סיכום סיבוב - רמה קשה</h2>
+                <div id="final-stats-hard"></div>
+                <button class="action-btn" onclick="resetHardGame()">נסה שוב</button>
+                <button class="action-btn secondary" onclick="backToHome()">מסך הבית</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="profile-screen" class="hidden">
+        <div class="profile-container">
+            <header class="profile-header">
+                <div class="user-avatar">👤</div>
+                <h2 id="profile-username">שלום, אורח</h2>
+                <button class="action-btn secondary" onclick="logout()">התנתק</button>
+            </header>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>רמה קלה</h3>
+                    <p>שיא: <span id="record-easy">0</span> אותיות</p>
+                </div>
+                <div class="stat-card">
+                    <h3>רמה בינונית</h3>
+                    <p>שיא: <span id="record-medium">0</span> נקודות</p>
+                </div>
+                <div class="stat-card">
+                    <h3>רמה קשה</h3>
+                    <p>שיא: <span id="record-hard">0</span> תווים</p>
+                </div>
+            </div>
+            <div class="history-section">
+                <h3>פעילות אחרונה</h3>
+                <div id="activity-log">עוד לא שיחקת מספיק...</div>
+            </div>
+        </div>
+    </section>
+
+    <div id="login-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>התחברות למערכת</h2>
+            <input type="text" id="username-input" placeholder="הכנס שם משתמש">
+            <button class="action-btn" onclick="login()">התחבר</button>
+            <button class="action-btn secondary" onclick="closeLoginModal()">ביטול</button>
+        </div>
+    </div>
+
+    <script src="database.js"></script>
+    <script src="keyboard.js"></script>
+    <script src="ui.js"></script>
+    <script src="game-easy.js"></script>
+    <script src="game-medium.js"></script>
+    <script src="game-hard.js"></script>
+</body>
+</html>
