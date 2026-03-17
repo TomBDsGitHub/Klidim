@@ -1,9 +1,9 @@
+// game-medium.js
+
 let currentWord = "";
 let charIndex = 0;
 let mediumScore = 0;
 let mediumTimeLeft = 40;
-let mediumActive = false;
-let mediumInterval;
 let wordHasError = false; // למעקב אחרי בונוס מילה מושלמת
 
 function startMediumGame() {

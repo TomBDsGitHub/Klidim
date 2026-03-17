@@ -1,10 +1,10 @@
+// game-hard.js
+
 let currentSentence = "";
 let hardCharIndex = 0;
 let hardErrors = 0;
 let hardSuccesses = 0;
 let hardTimeLeft = 60;
-let hardActive = false;
-let hardInterval;
 
 function startHardGame() {
     // 1. עצירה וניקוי מוחלט של אינטרוולים קודמים

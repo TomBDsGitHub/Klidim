@@ -10,7 +10,7 @@
 <body>
 
     <nav class="navbar">
-        <div class="logo-wrapper" onclick="showScreen('home-screen')">
+        <div class="logo-wrapper" onclick="backToHome()">
             <img src="LOGO.png" alt="קלידים לוגו" class="nav-logo-img">
             <span class="logo-text">קלידים</span>
         </div>
@@ -18,7 +18,7 @@
     </nav>
 
     <nav id="sidebar" class="sidebar">
-        <a href="#" onclick="showScreen('home-screen')">מסך הבית</a>
+        <a href="#" onclick="backToHome()">מסך הבית</a>
         <a href="#" onclick="showScreen('theory-screen')">תיאוריה</a>
         <a href="#" id="sidebar-profile-btn" class="hidden" onclick="showScreen('profile-screen')">אזור אישי</a>
         <a href="#" id="sidebar-login-btn" onclick="showLoginModal()">התחברות</a>
@@ -41,7 +41,7 @@
             </button>
             <button class="level-card medium" onclick="showScreen('medium-screen')">
                 <h2>רמה בינונית</h2>
-                <p>מילים בעברית</p>
+                <p>מילים בודדות</p>
             </button>
             <button class="level-card hard" onclick="showScreen('hard-screen')">
                 <h2>רמה קשה</h2>
@@ -56,7 +56,7 @@
     </main>
 
     <section id="game-screen" class="hidden">
-        <button class="exit-btn" onclick="exitGame()">✖ חזרה לתפריט</button>
+        <button class="exit-btn" onclick="backToHome()">✖ חזרה לתפריט</button>
         <div id="start-overlay" class="overlay-box">
             <h2>רמה קלה: אותיות</h2>
             <p>בשלב זה יופיעו אותיות אקראיות במרכז המסך.<br>עליכם להקיש עליהן הכי מהר שאפשר.<br>זמן המשחק: 20 שניות.</p>
@@ -101,7 +101,7 @@
     </section>
 
     <section id="medium-screen" class="hidden">
-        <button class="exit-btn" onclick="exitGameMedium()">✖ חזרה לתפריט</button>
+        <button class="exit-btn" onclick="backToHome()">✖ חזרה לתפריט</button>
         <div id="start-overlay-medium" class="overlay-box">
             <h2>רמה בינונית: מילים</h2>
             <p>עליכם להקליד מילים שלמות.<br>אות נכונה תהפוך לירוקה, טעות תהפוך לאדומה.<br>בונוס: מילה מושלמת שווה ניקוד כפול!</p>
@@ -126,7 +126,7 @@
     </section>
 
     <section id="hard-screen" class="hidden">
-        <button class="exit-btn" onclick="exitGameHard()">✖ חזרה לתפריט</button>
+        <button class="exit-btn" onclick="backToHome()">✖ חזרה לתפריט</button>
         <div id="start-overlay-hard" class="overlay-box">
             <h2>רמה קשה: משפטים</h2>
             <p>כאן מתרגלים הקלדה אמיתית.<br>זמן המשחק: 60 שניות.</p>

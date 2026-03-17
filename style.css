@@ -1,6 +1,6 @@
 /* הגדרות כלליות */
 body {
-    background-color: #E6E6FA; /* סגול פסטל נעים */
+    background-color: #7deaf6; /* סגול פסטל נעים */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
@@ -13,7 +13,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px;
-    background-color: #D8BFD8; /* הסגול הכהה המקורי שלך */
+    background-color: #d1d1d1; /* הסגול הכהה המקורי שלך */
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
@@ -34,7 +34,7 @@ body {
 
 /* כפתורי התחברות ואזור אישי בבר העליון */
 .navbar .login-btn, .navbar .profile-link {
-    background-color: #6a5acd;
+    background-color: #5ac0cd;
     color: white;
     border: none;
     padding: 8px 18px;

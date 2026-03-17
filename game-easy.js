@@ -1,8 +1,10 @@
+// game-easy.js
+// לוגיקה של רמת הקושי הקלה - אותיות אקראיות
+
 let currentLetter = "";
 let successes = 0;
 let errors = 0;
 let timeLeft = 20;
-let gameActive = false;
 let timerInterval;
 
 // פונקציה לבחירת אות אקראית - השארתי רק גרסה אחת תקינה!

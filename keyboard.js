@@ -1,9 +1,9 @@
 const HEBREW_LAYOUT = [
-    ["~", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "Backspace"],
-    ["Tab", "/", "'", "ק", "ר", "א", "ט", "ו", "ן", "ם", "פ", "[", "]", "\\"],
-    ["Caps", "ש", "ד", "ג", "כ", "ע", "י", "ח", "ל", "ך", "ף", ",", "Enter"],
-    ["Shift", "ז", "ח", "ס", "ב", "נ", "מ", "צ", "ת", "ץ", ".", "Shift"],
-    ["Ctrl", "Win", "Alt", " ", "Alt", "Fn", "Ctrl"]
+    ["", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "Backspace"],
+    ["", "/", "'", "ק", "ר", "א", "ט", "ו", "ן", "ם", "פ", "", "", ""],
+    ["", "ש", "ד", "ג", "כ", "ע", "י", "ח", "ל", "ך", "ף", ",", "Enter"],
+    ["Shift", "ז", "ס", "ב", "ה", "נ", "מ", "צ", "ת", "ץ", ".", "Shift"],
+    ["Ctrl", "Fn", "Win", "Alt", " ", "Alt", "Ctrl", "", ""]
 ];
 
 function createKeyboard(containerId) {
@@ -44,6 +44,6 @@ function flashKey(containerId, keyChar, status) {
     if (keyElement) {
         const className = status === 'correct' ? 'key-correct' : 'key-wrong';
         keyElement.classList.add(className);
-        setTimeout(() => keyElement.classList.remove(className), 300);
+        setTimeout(() => keyElement.classList.remove(className), 400);
     }
 }

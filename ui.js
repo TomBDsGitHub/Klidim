@@ -1,6 +1,12 @@
 // ui.js
 /// פונקציות ניהול ממשק משתמש, ניווט בין מסכים, תפריט צדדי, התחברות וכו'
 
+let gameInterval;
+let mediumInterval;
+let hardInterval;
+let gameActive = false;
+let mediumActive = false;
+let hardActive = false;
 // ניהול תפריט צדדי
 const hamburgerBtn = document.querySelector('.hamburger');
 const sidebar = document.getElementById('sidebar');
@@ -45,18 +51,62 @@ function showScreen(screenId) {
 
 // נעדכן את פונקציית החזרה הביתה
 function backToHome() {
+    // 1. עצירת כל האינטרוולים (השעונים) של כל הרמות
+    clearInterval(gameInterval);    // רמה קלה
+    clearInterval(mediumInterval);  // רמה בינונית
+    clearInterval(hardInterval);    // רמה קשה
+
+    // 2. כיבוי מצבי "משחק פעיל"
+    gameActive = false;
+    mediumActive = false;
+    hardActive = false;
+
+    // 3. איפוס ה-UI של כל רמה למצב "הוראות" (לפני התחלה)
+    // רמה קלה
+    document.getElementById('start-overlay').classList.remove('hidden');
+    document.getElementById('stats-bar').classList.add('hidden');
+    document.getElementById('target-area').classList.add('hidden');
+    document.getElementById('results-modal').classList.add('hidden');
+    document.getElementById('keyboard-easy').innerHTML = ""; // העלמת המקלדת
+
+    // רמה בינונית (וודא שה-IDs תואמים ל-HTML שלך)
+    document.getElementById('start-overlay-medium').classList.remove('hidden');
+    document.getElementById('stats-bar-medium').classList.add('hidden');
+    document.getElementById('target-area-medium').classList.add('hidden');
+    document.getElementById('results-modal-medium').classList.add('hidden');
+    document.getElementById('keyboard-medium').innerHTML = "";
+
+    // רמה קשה
+    document.getElementById('start-overlay-hard').classList.remove('hidden');
+    document.getElementById('stats-bar-hard').classList.add('hidden');
+    document.getElementById('target-area-hard').classList.add('hidden');
+    document.getElementById('results-modal-hard').classList.add('hidden');
+    document.getElementById('keyboard-hard').innerHTML = "";
+
+    // 4. מעבר למסך הבית
     showScreen('home-screen');
 }
 
 // פונקציית עזר לאיפוס ויזואלי של המסכים
 function resetScreenToInitialState(screenId) {
+    // איפוס רמה קלה
+    if (screenId === 'game-screen') {
+        document.getElementById('start-overlay').classList.remove('hidden');
+        document.getElementById('stats-bar').classList.add('hidden');
+        document.getElementById('target-area').classList.add('hidden');
+    }
+    // איפוס רמה בינונית
+    if (screenId === 'medium-screen') {
+        document.getElementById('start-overlay-medium').classList.remove('hidden');
+        document.getElementById('stats-bar-medium').classList.add('hidden');
+        document.getElementById('target-area-medium').classList.add('hidden');
+    }
+    // איפוס רמה קשה
     if (screenId === 'hard-screen') {
         document.getElementById('start-overlay-hard').classList.remove('hidden');
         document.getElementById('stats-bar-hard').classList.add('hidden');
         document.getElementById('target-area-hard').classList.add('hidden');
-        document.getElementById('results-modal-hard').classList.add('hidden');
     }
-    // אפשר להוסיף כאן באותו אופן עבור game-screen ו-medium-screen
 }
 
 function showLoginModal() {
