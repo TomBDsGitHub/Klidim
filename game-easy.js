@@ -20,13 +20,6 @@ function nextLetter() {
     }
 }
 
-function goToLevel(level) {
-    if (level === 'easy') {
-        document.querySelector('main').classList.add('hidden');
-        document.getElementById('game-screen').classList.remove('hidden');
-    }
-}
-
 function startGame() {
     // מסתירים את ההסבר ומראים את המשחק
     document.getElementById('start-overlay').classList.add('hidden');

@@ -114,10 +114,6 @@ function endMediumGame() {
     document.getElementById('results-modal-medium').classList.remove('hidden');
 }
 
-// // אל תשכח להוסיף את הפונקציה goToLevel למסך הבינוני ב-ui.js או כאן
-// function goToLevelMedium() {
-//     showScreen('medium-screen');
-// }
 
 function exitGameMedium() {
     // עצירת הטיימר של הרמה הבינונית

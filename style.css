@@ -1,6 +1,6 @@
 /* הגדרות כלליות */
 body {
-    background-color: #7deaf6; /* סגול פסטל נעים */
+    background-color: #99edf6; /* סגול פסטל נעים */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
@@ -13,7 +13,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px;
-    background-color: #d1d1d1; /* הסגול הכהה המקורי שלך */
+    background-color: #84e6ff; /* הסגול הכהה המקורי שלך */
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;

@@ -46,6 +46,10 @@ function showScreen(screenId) {
             resetScreenToInitialState(screenId);
         }
     }
+    if (screenId === 'theory-screen') {
+        createKeyboard('learning-keyboard', 'learning'); // מצב למידה
+        createKeyboard('Starting-position-keyboard', 'home-row'); // מצב מיקום התחלתי
+    }
     closeMenu();
 }
 

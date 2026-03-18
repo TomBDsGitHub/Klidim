@@ -128,12 +128,6 @@ function resetHardGame() {
     startHardGame();
 }
 
-// function exitGameHard() {
-//     clearInterval(hardInterval);
-//     hardActive = false;
-//     showScreen('home-screen');
-// }
-
 function endHardGame() {
     hardActive = false; // חשוב מאוד! עוצר את הקלט מהמקלדת
     clearInterval(hardInterval); // ליתר ביטחון

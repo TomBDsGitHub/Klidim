@@ -51,3 +51,96 @@
     background-color: #f1c40f !important; /* צהוב או ירוק בהיר למקש שהיה אמור להילחץ */
     box-shadow: 0 0 10px #f1c40f;
 }
+
+/* יד שמאל - גוונים קרים/בהירים */
+.key.pinky-left  { background-color: #ffcccc !important; } /* אדום בהיר */
+.key.ring-left   { background-color: #fff3cd !important; } /* צהוב בהיר */
+.key.middle-left { background-color: #d4edda !important; } /* ירוק בהיר */
+.key.index-left  { background-color: #d1ecf1 !important; } /* תכלת בהיר */
+
+/* יד ימין - גוונים חמים/כהים יותר */
+.key.index-right  { background-color: #cce5ff !important; } /* כחול */
+.key.middle-right { background-color: #e2e3e5 !important; } /* אפור/סגול */
+.key.ring-right   { background-color: #f8d7da !important; } /* ורוד */
+.key.pinky-right  { background-color: #d1d1e0 !important; } /* סגול בהיר */
+
+/* אגודלים - נשאיר אותו דבר */
+.key.thumb { background-color: #e1bee7 !important; }
+
+.finger-legend {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.legend-item {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+/* התאמת צבעי המקרא לצבעי המקשים */
+.legend-item.pinky { background: #ffcccc; }
+.legend-item.ring { background: #fff3cd; }
+.legend-item.middle { background: #d4edda; }
+.legend-item.index { background: #d1ecf1; }
+.legend-item.thumb { background: #f8d7da; }
+
+.hands-container {
+    display: flex;
+    justify-content: center;
+    gap: 100px;
+    margin-top: 30px;
+    padding-bottom: 20px;
+}
+
+.hand {
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    height: 120px;
+}
+
+/* הגדרות כלליות לכל האצבעות (רוחב ועיצוב) */
+.finger {
+    width: 25px;
+    border-radius: 12px 12px 0 0;
+    margin: 0 2px;
+    border: 1px solid #ddd;
+    transition: transform 0.2s;
+}
+
+/* הגדרת גבהים וצבעים לפי אצבעות - יד שמאל */
+.finger.pinky-left  { height: 60px;  background-color: #ffcccc; }
+.finger.ring-left   { height: 85px;  background-color: #fff3cd; }
+.finger.middle-left { height: 95px;  background-color: #d4edda; }
+.finger.index-left  { height: 85px;  background-color: #d1ecf1; }
+
+/* הגדרת גבהים וצבעים לפי אצבעות - יד ימין */
+.finger.index-right  { height: 85px;  background-color: #cce5ff; }
+.finger.middle-right { height: 95px;  background-color: #e2e3e5; }
+.finger.ring-right   { height: 85px;  background-color: #f8d7da; }
+.finger.pinky-right  { height: 60px;  background-color: #d1d1e0; }
+
+/* אגודלים - גובה משותף */
+.finger.thumb { height: 45px; background-color: #e1bee7; margin-top: 40px; }
+
+/* האגודלים צריכים זווית */
+.left-hand .thumb  { transform: rotate(-30deg); margin-right: 15px; }
+.right-hand .thumb { transform: rotate(30deg); margin-left: 15px; }
+
+.palm {
+    position: absolute;
+    bottom: -30px;
+    width: 130px;
+    height: 60px;
+    background-color: #f0f0f0;
+    border-radius: 0 0 40px 40px;
+    border: 1px solid #ddd;
+    z-index: -1;
+}
+
+.left-hand .palm { left: 10px; }
+.right-hand .palm { right: 10px; }
