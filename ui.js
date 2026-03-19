@@ -24,7 +24,16 @@ function closeMenu() {
 }
 
 function showScreen(screenId) {
-    const screens = ['home-screen', 'game-screen', 'theory-screen', 'medium-screen', 'hard-screen', 'profile-screen'];
+    const screens = [
+        'home-screen', 
+        'game-screen', 
+        'theory-screen', 
+        'medium-screen', 
+        'hard-screen', 
+        'profile-screen', 
+        'study-screen',
+        'level-play-screen'
+    ];
 
     screens.forEach(id => {
         const screen = document.getElementById(id);
@@ -40,9 +49,6 @@ function showScreen(screenId) {
         const target = document.getElementById(screenId);
         if (target) {
             target.classList.remove('hidden');
-            
-            // --- תוספת לתיקון הבאג ---
-            // אם נכנסנו למסך משחק, נוודא שה-Overlay (ההסבר) מופיע והמשחק מוסתר
             resetScreenToInitialState(screenId);
         }
     }
@@ -50,7 +56,13 @@ function showScreen(screenId) {
         createKeyboard('learning-keyboard', 'learning'); // מצב למידה
         createKeyboard('Starting-position-keyboard', 'home-row'); // מצב מיקום התחלתי
     }
-    closeMenu();
+    if (screenId === 'study-screen') {
+        const levelContent = document.getElementById('level-content');
+        if (levelContent) levelContent.innerHTML = '';
+        generateLearningMap();
+    }
+    //closeMenu();
+    if (typeof closeMenu === 'function') closeMenu();
 }
 
 // נעדכן את פונקציית החזרה הביתה
@@ -161,7 +173,7 @@ function updateUIForUser(username) {
         loginElements.forEach(el => el && el.classList.add('hidden'));
         profileElements.forEach(el => el && el.classList.remove('hidden'));
         
-        if (welcomeMsg) welcomeMsg.innerText = `שלום, ${username}! מוכן להתאמן?`;
+        if (welcomeMsg) welcomeMsg.innerText = `שלום, ${username}! מוכן ללמוד?`;
         if (profileName) profileName.innerText = `שלום, ${username}`;
     } else {
         // מצב אורח
@@ -180,3 +192,49 @@ window.addEventListener('load', () => {
         updateUIForUser(savedUser);
     }
 });
+
+function generateLearningMap() {
+    const container = document.getElementById('learning-circle');
+    if (!container) return;
+
+    container.innerHTML = '';
+    const totalLevels = 15;
+    const radius = 180; // המרחק מהמרכז בפיקסלים
+    const centerX = 225; // מרכז המיכל (450/2)
+    const centerY = 225;
+
+    for (let i = 1; i <= totalLevels; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'step-node';
+        btn.innerText = i;
+        btn.onclick = () => startStudyLevel(i);
+
+        // חישוב זווית: מחלקים 360 מעלות ב-15 שלבים
+        // פחות 90 מעלות כדי להתחיל מהשעה 12 (למעלה)
+        const angle = ((i - 1) / totalLevels) * 2 * Math.PI - Math.PI / 2;
+        
+        // חישוב מיקום X ו-Y בעזרת סינוס וקוסינוס
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+
+        btn.style.left = `${x}px`;
+        btn.style.top = `${y}px`;
+
+        container.appendChild(btn);
+    }
+}
+
+function startStudyLevel(levelNumber) {
+    const title = document.getElementById('current-level-title');
+    const content = document.getElementById('level-content');
+    
+    // ניקוי תוכן קודם לפני טעינת החדש
+    if (content) content.innerHTML = '';
+    
+    if (title) title.innerText = `שלב ${levelNumber}`;
+    
+    showScreen('level-play-screen');
+    
+    // כאן תבוא הלוגיקה שתבנה את השלב לפי המספר שלו
+    console.log(`טוען את שלב ${levelNumber}...`);
+}

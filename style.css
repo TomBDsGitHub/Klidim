@@ -1,6 +1,6 @@
 /* הגדרות כלליות */
 body {
-    background-color: #99edf6; /* סגול פסטל נעים */
+    background-color: #11cdea; /* סגול פסטל נעים */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
@@ -13,7 +13,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px;
-    background-color: #84e6ff; /* הסגול הכהה המקורי שלך */
+    background-color: #62bacb; /* הסגול הכהה המקורי שלך */
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
@@ -107,7 +107,7 @@ main {
     align-items: center;
     gap: 20px;
     flex-wrap: wrap;
-    margin-top: 50px;
+    margin-top: 20px;
 }
 
 .level-card {
@@ -197,7 +197,7 @@ main {
     border-radius: 25px;
     font-size: 18px;
     cursor: pointer;
-    margin: 10px;
+    margin: 0px;
     transition: 0.3s;
 }
 
@@ -456,4 +456,109 @@ main {
     z-index: 10;     /* מבטיח שהוא יהיה מעל אלמנטים אחרים ברקע */
     opacity: 0.9;    /* שקיפות קלה למראה מעודן יותר - אופציונלי */
     pointer-events: none; /* ה-GIF לא יפריע ללחיצות על כפתורים אם הוא מעליהם */
+}
+
+/* צבע ייחודי למרכז הלמידה - כחול שמיים */
+.study { 
+    border-right: 10px solid #4a90e2; 
+}
+
+
+/* כפתור חזור בראש המסך */
+.back-btn {
+    padding: 10px 20px;
+    background-color: #6a5acd;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 10px auto;
+}
+
+/* --- מירכוז כותרות וכפתורים בראש המסך --- */
+#study-screen {
+    text-align: center;
+}
+
+#study-screen .screen-header {
+    display: flex;
+    flex-direction: column; /* הופך את האלמנטים לעמודה במקום לשורה */
+    align-items: center;    /* ממורכז לאמצע */
+    gap: 10;              /* רווח אחיד בין הכפתורים והכותרת */
+    margin-bottom: 10px;
+}
+
+.circle-container {
+    position: relative;
+    width: 450px;  /* גודל המעגל */
+    height: 450px;
+    margin: 0px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.learning-circle {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* כפתור התיאוריה במרכז */
+.center-theory-btn {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-color: #6a5acd;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 10;
+    box-shadow: 0 0 20px rgba(106, 90, 205, 0.4);
+    transition: transform 0.2s;
+}
+
+.center-theory-btn:hover {
+    transform: scale(1.1);
+}
+
+/* כפתורי השלבים */
+.step-node {
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    background-color: white;
+    border: 3px solid #4a90e2;
+    color: #4a90e2;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    /* מרכוז הכפתור על הנקודה המתמטית */
+    margin-left: -27px; 
+    margin-top: -27px;
+    z-index: 5;
+}
+
+.step-node:hover {
+    background-color: #4a90e2;
+    color: white;
+    transform: scale(1.2);
+}
+
+/* קו מעגלי מקווקו ברקע (אופציונלי למראה) */
+.circle-container::before {
+    content: '';
+    position: absolute;
+    width: 360px; /* רדיוס המסלול */
+    height: 360px;
+    border: 2px dashed #4a90e2;
+    border-radius: 50%;
+    z-index: 1;
 }

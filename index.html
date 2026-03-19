@@ -20,6 +20,7 @@
     <nav id="sidebar" class="sidebar">
         <a href="#" onclick="backToHome()">מסך הבית</a>
         <a href="#" onclick="showScreen('theory-screen')">תיאוריה</a>
+        <a href="#" onclick="showScreen('study-screen')">מרכז הלמידה</a>
         <a href="#" id="sidebar-profile-btn" class="hidden" onclick="showScreen('profile-screen')">אזור אישי</a>
         <a href="#" id="sidebar-login-btn" onclick="showLoginModal()">התחברות</a>
     </nav>
@@ -27,11 +28,15 @@
     <div id="overlay" class="overlay"></div>
 
     <main id="home-screen">
-        <h1>ברוכים הבאים לקלידים!</h1>
+        <h1>קורס הקלדה עיוורת - הכוח באצבעות שלך</h1>
         <div class="welcome-section" id="welcome-message">
             <p>שלום אורח</p>
         </div>
-
+        <button class="level-card study" onclick="showScreen('study-screen')">
+            <h2>מרכז הלמידה</h2>
+            <p>לימוד הקלדה שלב אחר שלב</p>
+        </button>
+        <p>קדימה להתאמן!!!</p>
         <img src="typing_animation.gif" alt="אנימציית הקלדה" class="home-animated-gif">
 
         <div class="levels-container">
@@ -54,6 +59,31 @@
             <button id="main-profile-btn" class="action-btn hidden" onclick="showScreen('profile-screen')">לאזור האישי שלך</button>
         </div>
     </main>
+
+    <section id="study-screen" class="screen hidden">
+        <header class="screen-header">
+            <button class="back-btn" onclick="backToHome()">חזרה למסך הבית</button>
+            <h1>👐מסלול הלמידה - בחרו שלב👐</h1>
+        </header>
+
+        <div class="circle-container">
+            <button class="center-theory-btn" onclick="showScreen('theory-screen')">
+                <span>📖</span>
+                <br>תיאוריה
+            </button>
+            
+            <div id="learning-circle" class="learning-circle"></div>
+        </div>
+    </section>
+
+    <section id="level-play-screen" class="screen hidden">
+        <header class="screen-header">
+            <h1 id="current-level-title">שלב X</h1>
+            <button class="back-btn" onclick="showScreen('study-screen')">חזור למפה</button>
+        </header>
+        <div id="level-content">
+            </div>
+    </section>
 
     <section id="game-screen" class="hidden">
         <button class="exit-btn" onclick="backToHome()">✖ חזרה לתפריט</button>
@@ -85,7 +115,7 @@
         <div class="theory-container">
             <h1>איך ללמוד הקלדה עיוורת?</h1>
             <div class="theory-content">
-                <p>הסוד הוא לשמור על אצבעות "הבית" (ח, י, ע, כ) ולא להסתכל על המקלדת!</p>
+                <p>הסוד הוא לשמור על אצבעות "הבית" (ף, ך, ל, ח, כ, ג, ד, ש) ולא להסתכל על המקלדת!</p>
                 <div class="theory-keyboard-wrapper">
                     <h3>עמדת מוצא בתחילת כל הקלדה:</h3>
                     <div id="Starting-position-keyboard" class="keyboard"></div>
