@@ -1,3 +1,5 @@
+/* style.css */
+
 /* הגדרות כלליות */
 body {
     background-color: #11cdea; /* סגול פסטל נעים */
@@ -561,4 +563,105 @@ main {
     border: 2px dashed #4a90e2;
     border-radius: 50%;
     z-index: 1;
+}
+
+#study-text-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    font-size: 40px;
+    font-family: monospace;
+    margin: 20px 0;
+    direction: rtl;
+}
+
+.study-char {
+    padding: 5px 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+    border-bottom: 4px solid transparent;
+}
+
+/* התו שהמשתמש צריך להקליד עכשיו */
+.study-char.current {
+    border-bottom: 4px solid #4a90e2;
+    transform: scale(1.1);
+    background-color: #f0f8ff;
+}
+
+/* הצלחה / שגיאה */
+.study-char.correct {
+    color: #28a745;
+    background-color: #e8f5e9;
+    border-bottom: 4px solid #28a745;
+}
+
+.study-char.error {
+    color: #dc3545;
+    background-color: #fde8e8;
+    border-bottom: 4px solid #dc3545;
+    animation: shake 0.3s;
+}
+
+/* אנימציית שקשוק לשגיאה */
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(5px); }
+    50% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+}
+
+#study-timer {
+    font-size: 24px;
+    font-weight: bold;
+    color: #d9534f;
+    margin: 0px 0;
+}
+
+
+/* Header של מסך הלמידה */
+.study-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #eee;
+    margin-bottom: 20px;
+    width: 97%;
+}
+
+.study-header h1 {
+    margin: 0;
+    font-size: 24px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.back-btn-small {
+    padding: 8px 15px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.timer {
+    font-size: 20px;
+    font-weight: bold;
+    min-width: 100px;
+    text-align: left;
+}
+
+/* התאמות למודל תוצאות */
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
 }

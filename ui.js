@@ -58,7 +58,7 @@ function showScreen(screenId) {
     }
     if (screenId === 'study-screen') {
         const levelContent = document.getElementById('level-content');
-        if (levelContent) levelContent.innerHTML = '';
+        //if (levelContent) levelContent.innerHTML = '';
         generateLearningMap();
     }
     //closeMenu();
@@ -222,19 +222,4 @@ function generateLearningMap() {
 
         container.appendChild(btn);
     }
-}
-
-function startStudyLevel(levelNumber) {
-    const title = document.getElementById('current-level-title');
-    const content = document.getElementById('level-content');
-    
-    // ניקוי תוכן קודם לפני טעינת החדש
-    if (content) content.innerHTML = '';
-    
-    if (title) title.innerText = `שלב ${levelNumber}`;
-    
-    showScreen('level-play-screen');
-    
-    // כאן תבוא הלוגיקה שתבנה את השלב לפי המספר שלו
-    console.log(`טוען את שלב ${levelNumber}...`);
 }

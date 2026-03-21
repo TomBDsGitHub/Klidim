@@ -1,3 +1,5 @@
+// keyboard.js
+
 const HEBREW_LAYOUT = [
     ["", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "Backspace"],
     ["", "/", "'", "ק", "ר", "א", "ט", "ו", "ן", "ם", "פ", "", "", ""],
@@ -23,7 +25,7 @@ const FINGER_MAP = {
     ' ': 'thumb'
 };
 
-function createKeyboard(containerId, mode = 'none') {
+function createKeyboard(containerId, mode = 'none', activeKeysArray = []) {
     // mode יכול להיות: 'none' (רגיל), 'learning' (הכל צבוע), או 'home-row' (רק עמדת מוצא)
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -51,6 +53,12 @@ function createKeyboard(containerId, mode = 'none') {
                 }
             } else if (mode === 'home-row') {
                 if (homeRowKeys.includes(keyText)) {
+                    const fingerClass = FINGER_MAP[keyText] || '';
+                    if (fingerClass) keyDiv.classList.add(fingerClass);
+                }
+            } else if (mode === 'study') {
+                // צובע רק אם המקש נמצא במאגר של השלב הנוכחי
+                if (activeKeysArray.includes(keyText)) {
                     const fingerClass = FINGER_MAP[keyText] || '';
                     if (fingerClass) keyDiv.classList.add(fingerClass);
                 }

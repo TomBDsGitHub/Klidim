@@ -77,12 +77,39 @@
     </section>
 
     <section id="level-play-screen" class="screen hidden">
-        <header class="screen-header">
-            <h1 id="current-level-title">שלב X</h1>
-            <button class="back-btn" onclick="showScreen('study-screen')">חזור למפה</button>
+        <header class="study-header">
+            <button class="back-btn-small" onclick="showScreen('study-screen')">חזור למפה</button>
+            <h1 id="current-level-title">שלב 1</h1>
+            <div id="study-timer" class="timer">זמן: 30</div>
         </header>
+        
         <div id="level-content">
+            <div id="study-start-overlay" class="overlay-box">
+                <h2>מוכנים לתרגל?</h2>
+                <p>עליכם להקליד את התווים המופיעים על המסך.<br>
+                <strong>שימו לב:</strong> אם תטעו, התו ייצבע באדום ותצטרכו לנסות שוב עד שתצליחו!<br>
+                הזמן שלכם: 40 שניות.</p>
+                <button class="action-btn" onclick="realStartStudy()">התחל שלב</button>
             </div>
+
+            <div id="study-game-area" class="hidden">
+                <div id="study-text-container"></div>
+                <div id="study-keyboard" class="keyboard"></div>
+            </div>
+
+            <div id="study-results-modal" class="modal hidden">
+                <div class="modal-content">
+                    <h2>כל הכבוד!</h2>
+                    <div id="study-final-stats">
+                        <p>הצלחת להקליד <span id="correct-chars-count" style="font-weight:bold; color:#28a745;">0</span> תווים נכונים!</p>
+                    </div>
+                    <div class="modal-buttons">
+                        <button class="action-btn" onclick="startStudyLevel(currentLevelPlaying)">נסה שוב</button>
+                        <button class="action-btn secondary" onclick="showScreen('study-screen')">חזרה למפה</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section id="game-screen" class="hidden">
@@ -242,6 +269,7 @@
     <script src="database.js"></script>
     <script src="keyboard.js"></script>
     <script src="ui.js"></script>
+    <script src="study_levels.js"></script>
     <script src="game-easy.js"></script>
     <script src="game-medium.js"></script>
     <script src="game-hard.js"></script>
