@@ -55,6 +55,12 @@ function updateStats() {
 // מאזין להקלדה
 window.addEventListener('keydown', (e) => {
     if (!gameActive) return;
+
+    // בדיקת שפה
+    if (isEnglish(e.key)) {
+        document.getElementById('language-alert').classList.remove('hidden');
+        return;
+    }
     
     // בדיקה אם המקש שנלחץ הוא אכן האות המבוקשת
     if (e.key === currentLetter) {

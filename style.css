@@ -665,3 +665,28 @@ main {
     justify-content: center;
     margin-top: 20px;
 }
+
+/* הבזק ירוק רגעי */
+.key-success-flash {
+    background-color: #2ecc71 !important;
+    box-shadow: 0 0 15px #2ecc71;
+    transform: scale(1.1);
+    transition: all 0.1s;
+    color: white !important;
+}
+
+/* אדום קבוע לטעות - עד שהמשתמש לוחץ נכון */
+.key-error-hold {
+    background-color: #e74c3c !important;
+    box-shadow: 0 0 10px #e74c3c;
+    color: white !important;
+    animation: shake 0.2s ease-in-out;
+}
+
+/* אופציונלי: אנימציית רעידה קלה לטעות */
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    50% { transform: translateX(3px); }
+    100% { transform: translateX(0); }
+}

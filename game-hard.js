@@ -73,6 +73,12 @@ window.addEventListener('keydown', (e) => {
     if (!hardActive) return;
     if (e.key.length > 1 && e.key !== " ") return;
 
+    // בדיקת שפה
+    if (isEnglish(e.key)) {
+        document.getElementById('language-alert').classList.remove('hidden');
+        return;
+    }
+
     const letters = document.querySelectorAll('#sentence-display .letter');
     if (!letters || letters.length === 0) return;
 

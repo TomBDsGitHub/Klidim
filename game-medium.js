@@ -52,6 +52,12 @@ window.addEventListener('keydown', (e) => {
     if (!mediumActive) return;
     if (e.key.length > 1) return;
 
+    // בדיקת שפה
+    if (isEnglish(e.key)) {
+        document.getElementById('language-alert').classList.remove('hidden');
+        return;
+    }
+
     const letters = document.querySelectorAll('#word-display .letter');
     const expectedChar = currentWord[charIndex];
 

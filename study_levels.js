@@ -14,20 +14,34 @@ const LEVEL_KEYS = {
     2: ['ל', 'ג'], 
     3: ['ך', 'ד'], 
     4: ['ף', 'ש'],
-    5: ['פ', '.', ',', '0'], 
-    6: ['9', 'ם', 'ץ'], 
-    7: ['8', 'ן', 'ת'],
-    8: ['7', 'ו', 'צ', 'מ', 'י', 'ט', '6'], 
-    9: ['4', '5', 'א', 'ע', 'נ', 'ה', 'ר'],
-    10: ['3', 'ק', 'ב'], 
-    11: ['2', "'", 'ס'], 
-    12: ['1', '/', 'ז']
+    5: ['פ'], 
+    6: ['ם', 'ץ'], 
+    7: ['ן', 'ת'],
+    8: ['ו', 'צ', 'מ', 'י', 'ט'], 
+    9: ['א', 'ע', 'נ', 'ה', 'ר'],
+    10: ['ק', 'ב'], 
+    11: ['ס'], 
+    12: ['ז'],
+    13: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    14: ['\'', '.', ',', '/']
 };
 
 function getAccumulatedKeys(level) {
     let keys = [' ']; 
-    for (let i = 1; i <= level; i++) {
-        if (LEVEL_KEYS[i]) keys = keys.concat(LEVEL_KEYS[i]);
+    if (level <= 12 || level === 15){
+        for (let i = 1; i <= level; i++) {
+            if (LEVEL_KEYS[i]) keys = keys.concat(LEVEL_KEYS[i]);
+        }
+    } else if (level === 13) {
+        for (let i = 1; i <= 4; i++) {
+            if (LEVEL_KEYS[i]) keys = keys.concat(LEVEL_KEYS[i]);
+        }
+        keys = keys.concat(LEVEL_KEYS[13]);
+    } else if (level === 14) {
+        for (let i = 1; i <= 4; i++) {
+            if (LEVEL_KEYS[i]) keys = keys.concat(LEVEL_KEYS[i]);
+        }
+        keys = keys.concat(LEVEL_KEYS[14]);
     }
     return keys;
 }
@@ -110,6 +124,13 @@ function endStudyLevel() {
 // האזנה למקלדת
 document.addEventListener('keydown', (e) => {
     if (isStudyActive && !document.getElementById('level-play-screen').classList.contains('hidden')) {
+
+        // בדיקת שפה
+        if (isEnglish(e.key)) {
+            document.getElementById('language-alert').classList.remove('hidden');
+            return;
+        }
+
         if (['Shift', 'CapsLock', 'Alt', 'Control'].includes(e.key)) return;
         if (e.key === ' ') e.preventDefault();
         
@@ -117,9 +138,29 @@ document.addEventListener('keydown', (e) => {
         const spans = document.querySelectorAll('#study-text-container .study-char');
         const currentSpan = spans[currentStudyIndex];
         
+        // מציאת המקש הפיזי במקלדת הווירטואלית
+        const visualKey = document.querySelector(`#study-keyboard [data-key="${e.key}"]`);
+        
+        // --- פונקציית עזר פנימית לניקוי כל המקשים האדומים ---
+        const clearRedKeys = () => {
+            const redKeys = document.querySelectorAll('.key-error-hold');
+            redKeys.forEach(k => k.classList.remove('key-error-hold'));
+        };
+
         if (e.key === expectedChar) {
+            // -- הצלחה --
+
+            // קודם כל מנקים את כל האדומים שהיו (אם היו)
+            clearRedKeys();
+
             currentSpan.classList.remove('current', 'error');
             currentSpan.classList.add('correct');
+            
+            // הדגשה ירוקה רגעית במקלדת
+            if (visualKey) {
+                visualKey.classList.add('key-success-flash');
+                setTimeout(() => visualKey.classList.remove('key-success-flash'), 200);
+            }
             
             currentStudyIndex++;
             correctCharsTotal++; // קידום המונה בגלל הצלחה
@@ -130,8 +171,16 @@ document.addEventListener('keydown', (e) => {
                 spans[currentStudyIndex].classList.add('current');
             }
         } else {
+            // -- טעות --
+
+            // מנקים את האדום הקודם כדי שרק המקש הנוכחי יהיה אדום
+            clearRedKeys();
+
             currentSpan.classList.add('error');
-            // מונה השגיאות לא מופיע בציון הסופי אז לא הוספתי, אבל אפשר להוסיף אם תרצה
+            // הדגשה אדומה קבועה עד לתיקון
+            if (visualKey) {
+                visualKey.classList.add('key-error-hold');
+            }
         }
     }
 });

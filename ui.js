@@ -223,3 +223,11 @@ function generateLearningMap() {
         container.appendChild(btn);
     }
 }
+
+function closeLanguageAlert() {
+    document.getElementById('language-alert').classList.add('hidden');
+}
+
+function isEnglish(key) {
+    return /^[a-zA-Z]$/.test(key);
+}
