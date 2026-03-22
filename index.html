@@ -236,32 +236,48 @@
                 <h2 id="profile-username">שלום, אורח</h2>
                 <button class="action-btn secondary" onclick="logout()">התנתק</button>
             </header>
+            
+            <div class="profile-notice">
+                <p>⭐ <strong>שימו לב:</strong> שיאים והתקדמות בשלבים נשמרים רק אם רמת הדיוק היא 80% ומעלה.</p>
+            </div>
+
             <div class="stats-grid">
+                <div class="stat-card learning-center" style="border-top: 4px solid #9b59b6;">
+                    <h3>מרכז הלמידה</h3>
+                    <p>שלב פתוח: <span id="profile-study-level">1</span></p>
+                    <p>שיא לשלב: <span id="profile-study-score">0</span> תווים (<span id="profile-study-acc">0</span>%)</p>
+                </div>
+
                 <div class="stat-card">
                     <h3>רמה קלה</h3>
                     <p>שיא: <span id="record-easy">0</span> אותיות</p>
+                    <p>דיוק: <span id="acc-easy">0</span>%</p>
                 </div>
+                
                 <div class="stat-card">
                     <h3>רמה בינונית</h3>
                     <p>שיא: <span id="record-medium">0</span> נקודות</p>
+                    <p>דיוק: <span id="acc-medium">0</span>%</p>
                 </div>
+                
                 <div class="stat-card">
                     <h3>רמה קשה</h3>
                     <p>שיא: <span id="record-hard">0</span> תווים</p>
+                    <p>דיוק: <span id="acc-hard">0</span>%</p>
                 </div>
-            </div>
-            <div class="history-section">
-                <h3>פעילות אחרונה</h3>
-                <div id="activity-log">עוד לא שיחקת מספיק...</div>
             </div>
         </div>
     </section>
 
     <div id="login-modal" class="modal hidden">
         <div class="modal-content">
-            <h2>התחברות למערכת</h2>
-            <input type="text" id="username-input" placeholder="הכנס שם משתמש">
-            <button class="action-btn" onclick="login()">התחבר</button>
+            <h2 id="auth-title">התחברות למערכת</h2>
+            <input type="text" id="username-input" placeholder="שם משתמש">
+            <input type="password" id="password-input" placeholder="סיסמה">
+            <p id="auth-error-msg" style="color: #e74c3c; font-size: 14px; margin: 5px 0; height: 20px;"></p>
+            
+            <button id="auth-submit-btn" class="action-btn" onclick="submitAuth()">התחבר</button>
+            <button id="auth-toggle-btn" class="action-btn secondary" onclick="toggleAuthMode()">אין משתמש? הירשם כאן</button>
             <button class="action-btn secondary" onclick="closeLoginModal()">ביטול</button>
         </div>
     </div>

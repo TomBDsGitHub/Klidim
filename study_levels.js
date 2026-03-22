@@ -8,6 +8,7 @@ let currentStudyLevelKeys = [];
 let isStudyActive = false;
 let correctCharsTotal = 0; // מונה תווים נכונים
 let currentLevelPlaying = 1; // לשמירת השלב הנוכחי לטובת "נסה שוב"
+let studyErrorsTotal = 0; // מונה טעויות
 
 const LEVEL_KEYS = {
     1: ['ח', 'כ'], 
@@ -47,7 +48,20 @@ function getAccumulatedKeys(level) {
 }
 
 // פונקציה ראשונה - מציגה את מסך השלב עם ה-Overlay
-function startStudyLevel(levelNumber) {
+async function startStudyLevel(levelNumber) {// בדיקת הגנה לוגית
+    let unlockedLevel = 1;
+    updateStudyMapUI(); // עדכון המפה לפני כל התחלה כדי לוודא שהמצב מעודכן
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        const userData = await DB.getUserData(currentUser);
+        unlockedLevel = userData.studyLevel;
+    }
+    
+    if (levelNumber > unlockedLevel) {
+        alert("השלב הזה עדיין נעול. עליך להשלים את השלבים הקודמים בהצלחה!");
+        return; // עוצר את הפונקציה ולא מכניס לשלב
+    }
+
     currentLevelPlaying = levelNumber;
     const title = document.getElementById('current-level-title');
     if (title) title.innerText = `שלב ${levelNumber}`;
@@ -72,6 +86,7 @@ function realStartStudy() {
     // איפוס נתונים
     studyTimeLeft = 40;
     correctCharsTotal = 0;
+    studyErrorsTotal = 0;
     isStudyActive = true;
     document.getElementById('study-timer').innerText = `זמן: ${studyTimeLeft}`;
     
@@ -111,14 +126,47 @@ function renderStudyRow() {
     }
 }
 
-function endStudyLevel() {
+async function endStudyLevel() {
     isStudyActive = false;
     clearInterval(studyTimerInterval);
     
+    // חישוב דיוק
+    const totalAttempts = correctCharsTotal + studyErrorsTotal;
+    let accuracy = 0;
+    if (totalAttempts > 0) {
+        accuracy = Math.round((correctCharsTotal / totalAttempts) * 100);
+    }
+    
+    // ניהול תוצאה ושמירה (רק אם מחובר)
+    let nextLevelUnlocked = false;
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        const previousLevel = (await DB.getUserData(currentUser)).studyLevel;
+        const updatedLevel = await DB.updateStudyLevel(currentUser, currentLevelPlaying, correctCharsTotal, accuracy);
+        if (updatedLevel > previousLevel) {
+            nextLevelUnlocked = true;
+        }
+        updateProfileUI(); // עדכון האזור האישי בזמן אמת
+    }
+
     // הצגת תוצאות
     document.getElementById('study-game-area').classList.add('hidden');
     document.getElementById('study-results-modal').classList.remove('hidden');
-    document.getElementById('correct-chars-count').innerText = correctCharsTotal;
+    
+    let resultHTML = `<p>הקלדת <span style="font-weight:bold; color:#28a745;">${correctCharsTotal}</span> תווים נכונים.</p>`;
+    resultHTML += `<p>רמת דיוק: <span style="font-weight:bold; color:${accuracy >= 80 ? '#28a745' : '#e74c3c'};">${accuracy}%</span></p>`;
+    
+    if (correctCharsTotal >= 35 && accuracy >= 80) {
+        if (nextLevelUnlocked) {
+             resultHTML += `<p style="color: #8e44ad; font-weight: bold;">🎉 פתחת את שלב ${currentLevelPlaying + 1}!</p>`;
+        } else {
+             resultHTML += `<p style="color: #2980b9;">מעולה! עמדת ביעדי השלב.</p>`;
+        }
+    } else {
+        resultHTML += `<p style="color: #e74c3c;">כדי לעבור שלב עליך להגיע ל-35 תווים ו-80% דיוק.</p>`;
+    }
+    
+    document.getElementById('study-final-stats').innerHTML = resultHTML;
 }
 
 // האזנה למקלדת
@@ -174,6 +222,7 @@ document.addEventListener('keydown', (e) => {
             // -- טעות --
 
             // מנקים את האדום הקודם כדי שרק המקש הנוכחי יהיה אדום
+            studyErrorsTotal++;
             clearRedKeys();
 
             currentSpan.classList.add('error');
@@ -184,3 +233,31 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
+
+async function updateStudyMapUI() {
+    let unlockedLevel = 1; // ברירת מחדל לאורח
+    
+    // משיכת השלב הפתוח של המשתמש המחובר
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        const userData = await DB.getUserData(currentUser);
+        unlockedLevel = userData.studyLevel;
+    }
+
+    // ושהם מסודרים מהראשון (שלב 1) עד האחרון
+    const levelButtons = document.querySelectorAll('.learning-circle'); 
+    
+    levelButtons.forEach((btn, index) => {
+        const levelNum = index + 1;
+        
+        if (levelNum <= unlockedLevel) {
+            // השלב פתוח
+            btn.classList.remove('locked-level');
+            btn.disabled = false;
+        } else {
+            // השלב נעול
+            btn.classList.add('locked-level');
+            btn.disabled = true; // מונע לחיצה ב-HTML
+        }
+    });
+}

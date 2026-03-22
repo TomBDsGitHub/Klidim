@@ -75,11 +75,19 @@ window.addEventListener('keydown', (e) => {
     nextLetter();
 });
 
-function endGame() {
+async function endGame() {
     gameActive = false;
     clearInterval(timerInterval);
     
     const accuracy = Math.round((successes / (successes + errors)) * 100) || 0;
+
+    // שמירה במסד הנתונים ורענון האזור האישי
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        await DB.saveGameRecord(currentUser, 'easy', successes, accuracy);
+        updateProfileUI(); // מעדכן את האזור האישי מאחורי הקלעים
+    }
+
     document.getElementById('final-stats').innerHTML = `
         <p>הצלחות: ${successes}</p>
         <p>שגיאות: ${errors}</p>

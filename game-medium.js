@@ -4,6 +4,7 @@ let currentWord = "";
 let charIndex = 0;
 let mediumScore = 0;
 let mediumTimeLeft = 40;
+let mediumErrors = 0;
 let wordHasError = false; // למעקב אחרי בונוס מילה מושלמת
 
 function startMediumGame() {
@@ -16,6 +17,7 @@ function startMediumGame() {
     document.getElementById('results-modal-medium').classList.add('hidden');
     
     mediumScore = 0;
+    mediumErrors = 0;
     mediumTimeLeft = 40;
     mediumActive = true;
     
@@ -68,6 +70,7 @@ window.addEventListener('keydown', (e) => {
     } else {
         letters[charIndex].classList.add('wrong');
         wordHasError = true;
+        mediumErrors++;
         flashKey('keyboard-medium', e.key, 'wrong');
         flashKey('keyboard-medium', currentWord[charIndex], 'correct');
         // לפי האפיון שלך: שגיאה מוסיפה נקודה למונה השגיאות (כאן נקרא לו ניקוד לצורך הפשטות)
@@ -113,9 +116,18 @@ function updateMediumStats() {
     document.getElementById('score-medium').innerText = mediumScore;
 }
 
-function endMediumGame() {
+async function endMediumGame() {
     mediumActive = false;
     clearInterval(mediumInterval);
+
+    // שמירה במסד הנתונים ורענון האזור האישי
+    const accuracy = mediumScore > 0 ? (mediumScore / (mediumScore + mediumErrors)) * 100 : 0;
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        await DB.saveGameRecord(currentUser, 'medium', mediumScore, accuracy);
+        updateProfileUI(); // מעדכן את האזור האישי מאחורי הקלעים
+    }
+
     document.getElementById('final-stats-medium').innerHTML = `<p>ניקוד סופי: ${mediumScore}</p>`;
     document.getElementById('results-modal-medium').classList.remove('hidden');
 }

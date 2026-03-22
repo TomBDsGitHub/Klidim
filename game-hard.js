@@ -134,13 +134,20 @@ function resetHardGame() {
     startHardGame();
 }
 
-function endHardGame() {
+async function endHardGame() {
     hardActive = false; // חשוב מאוד! עוצר את הקלט מהמקלדת
     clearInterval(hardInterval); // ליתר ביטחון
     
     const total = hardSuccesses + hardErrors;
     const acc = total > 0 ? Math.round((hardSuccesses / total) * 100) : 0;
     
+    // שמירה במסד הנתונים ורענון האזור האישי
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        await DB.saveGameRecord(currentUser, 'hard', hardSuccesses, acc);
+        updateProfileUI(); // מעדכן את האזור האישי מאחורי הקלעים
+    }
+
     document.getElementById('final-stats-hard').innerHTML = `
         <p>דיוק: ${acc}%</p>
         <p>תווים שהוקלדו: ${hardSuccesses}</p>

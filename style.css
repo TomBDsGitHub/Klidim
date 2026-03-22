@@ -266,11 +266,22 @@ main {
     justify-content: center;
 }
 
+/* הגדרת הגריד הראשי */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(3, 1fr); /* 3 עמודות שוות לרמות הקל, בינוני, קשה */
     gap: 20px;
-    margin-bottom: 30px;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* הגדרת כרטיסיית מרכז הלמידה לתפוס את כל השורה הראשונה */
+.stat-card.learning-center {
+    grid-column: 1 / -1; /* אומר לכרטיס להתחיל בעמודה הראשונה ולהסתיים באחרונה */
+    justify-self: center; /* ממרכז את התוכן של הכרטיס עצמו */
+    width: 100%; /* או רוחב ספציפי אם תרצה שהוא יהיה צר יותר מהשורה */
+    max-width: 600px; /* נותן לו רוחב יפה וממורכז */
 }
 
 .stat-card {
@@ -689,4 +700,13 @@ main {
     25% { transform: translateX(-3px); }
     50% { transform: translateX(3px); }
     100% { transform: translateX(0); }
+}
+
+.locked-level {
+    background-color: #bdc3c7 !important; /* צבע אפור אחיד */
+    color: #7f8c8d !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+    box-shadow: none !important;
+    transform: none !important;
 }

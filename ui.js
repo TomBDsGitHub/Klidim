@@ -231,3 +231,83 @@ function closeLanguageAlert() {
 function isEnglish(key) {
     return /^[a-zA-Z]$/.test(key);
 }
+
+function toggleAuthMode() {
+    toggleLoginMode();
+    isLoginMode = getLoginMode();
+    document.getElementById('auth-title').innerText = isLoginMode ? "התחברות למערכת" : "הרשמה למערכת";
+    document.getElementById('auth-submit-btn').innerText = isLoginMode ? "התחבר" : "צור משתמש";
+    document.getElementById('auth-toggle-btn').innerText = isLoginMode ? "אין משתמש? הירשם כאן" : "יש לך משתמש? התחבר";
+    document.getElementById('auth-error-msg').innerText = "";
+}
+
+async function submitAuth() {
+    const userVal = document.getElementById('username-input').value.trim();
+    const passVal = document.getElementById('password-input').value.trim();
+    const errorMsg = document.getElementById('auth-error-msg');
+    
+    if(!userVal || !passVal) {
+        errorMsg.innerText = "נא להזין שם משתמש וסיסמה.";
+        return;
+    }
+
+    try {
+        if (getLoginMode()) {
+            await DB.login(userVal, passVal);
+            finishLogin(userVal);
+        } else {
+            await DB.register(userVal, passVal);
+            finishLogin(userVal); // התחברות אוטומטית אחרי הרשמה
+        }
+    } catch (err) {
+        errorMsg.innerText = err;
+    }
+}
+
+function finishLogin(username) {
+    currentUser = username;
+    sessionStorage.setItem('activeUser', username); // שומרים לכל אורך הסשן
+    closeLoginModal();
+    document.getElementById('welcome-message').innerHTML = `<p>שלום ${username}!</p>`;
+    document.getElementById('profile-username').innerText = `שלום, ${username}`;
+    
+    // הסתרת מודל התחברות אם הוא פתוח
+    closeLoginModal();
+
+    // הצגת כפתורי משתמש
+    document.getElementById('main-login-btn').classList.add('hidden');
+    document.getElementById('main-profile-btn').classList.remove('hidden');
+    document.getElementById('sidebar-login-btn').classList.add('hidden');
+    document.getElementById('sidebar-profile-btn').classList.remove('hidden');
+    
+    updateProfileUI();
+}
+
+async function updateProfileUI() {
+    const currentUser = getCurrentUser();
+    if(!currentUser) return;
+    const data = await DB.getUserData(currentUser);
+    
+    document.getElementById('profile-study-level').innerText = data.studyLevel;
+    document.getElementById('profile-study-score').innerText = data.studyBestScore;
+    document.getElementById('profile-study-acc').innerText = data.studyBestAcc;
+    
+    document.getElementById('record-easy').innerText = data.records.easy;
+    document.getElementById('acc-easy').innerText = data.accuracy.easy;
+    document.getElementById('record-medium').innerText = data.records.medium;
+    document.getElementById('acc-medium').innerText = data.accuracy.medium;
+    document.getElementById('record-hard').innerText = data.records.hard;
+    document.getElementById('acc-hard').innerText = data.accuracy.hard;
+}
+
+function logout() {
+    setCurrentUser(null);
+    sessionStorage.removeItem('activeUser'); // מוחק את החיבור מהזיכרון
+    location.reload(); // הדרך הכי נקייה להתנתק היא לרענן את הדף
+    // showScreen('home-screen');
+    // document.getElementById('welcome-message').innerHTML = `<p>שלום אורח</p>`;
+    // document.getElementById('main-login-btn').classList.remove('hidden');
+    // document.getElementById('main-profile-btn').classList.add('hidden');
+    // document.getElementById('sidebar-login-btn').classList.remove('hidden');
+    // document.getElementById('sidebar-profile-btn').classList.add('hidden');
+}
