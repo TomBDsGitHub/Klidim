@@ -60,6 +60,7 @@ function showScreen(screenId) {
         const levelContent = document.getElementById('level-content');
         //if (levelContent) levelContent.innerHTML = '';
         generateLearningMap();
+        updateStudyMapUI();
     }
     //closeMenu();
     if (typeof closeMenu === 'function') closeMenu();

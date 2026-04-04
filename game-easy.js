@@ -54,6 +54,11 @@ function updateStats() {
 
 // מאזין להקלדה
 window.addEventListener('keydown', (e) => {
+    // בדיקה אם המקש הוא רווח ואם אנחנו בתוך משחק פעיל
+    if (e.code === "Space") {
+        e.preventDefault(); // זה השורה שמונעת את הקפיצה למטה!
+    }
+
     if (!gameActive) return;
 
     // בדיקת שפה

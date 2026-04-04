@@ -235,29 +235,36 @@ document.addEventListener('keydown', (e) => {
 });
 
 async function updateStudyMapUI() {
-    let unlockedLevel = 1; // ברירת מחדל לאורח
+    let unlockedLevel = 1;
     
-    // משיכת השלב הפתוח של המשתמש המחובר
     const currentUser = getCurrentUser();
     if (currentUser) {
         const userData = await DB.getUserData(currentUser);
-        unlockedLevel = userData.studyLevel;
+        unlockedLevel = userData.studyLevel || 1;
     }
 
-    // ושהם מסודרים מהראשון (שלב 1) עד האחרון
-    const levelButtons = document.querySelectorAll('.learning-circle'); 
+    // מוצאים את כל הכפתורים שנמצאים בתוך המעגל/מפה
+    const mapContainer = document.getElementById('learning-circle');
+    if (!mapContainer) return;
     
-    levelButtons.forEach((btn, index) => {
-        const levelNum = index + 1;
+    const levelButtons = mapContainer.querySelectorAll('button'); 
+    
+    levelButtons.forEach((btn) => {
+        // מניח שעל כל כפתור כתוב מספר השלב, או שיש לו attribute של השלב
+        const levelNum = parseInt(btn.innerText); 
         
         if (levelNum <= unlockedLevel) {
-            // השלב פתוח
+            // --- שלב פתוח ---
             btn.classList.remove('locked-level');
             btn.disabled = false;
+            // אפשר להוסיף כאן צבע זוהר לשלב הבא בתור שצריך לבצע
+            if (levelNum === unlockedLevel) {
+                btn.style.border = "3px solid #f1c40f"; // מסגרת זהובה לשלב הנוכחי
+            }
         } else {
-            // השלב נעול
+            // --- שלב נעול ---
             btn.classList.add('locked-level');
-            btn.disabled = true; // מונע לחיצה ב-HTML
+            btn.disabled = true;
         }
     });
 }

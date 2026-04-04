@@ -2,12 +2,37 @@
 
 /* הגדרות כלליות */
 body {
-    background-color: #11cdea; /* סגול פסטל נעים */
+    background-color: #1f5a95; /* סגול פסטל נעים */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
     color: #333;
+    overflow-x: hidden; /* מונע גלילה לצדדים */
 }
+
+/* החלת ה-GIF על כל המסכים */
+main, section.screen, section.hidden, section#game-screen, section#medium-screen, section#hard-screen, section#profile-screen {
+    background-image: url('night_sky_v2.gif'); /* ודא שזה השם המדויק של הקובץ */
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding-top: 10px; /* מרווח כדי שהתוכן לא ייכנס מתחת ל-Navbar */
+}
+
+/* הופך את כל הכרטיסיות והמודאלים לקצת שקופים ומטושטשים מאחורה */
+.level-card, .stat-card, .theory-container, .profile-container, .modal-content, .overlay-box {
+    background: rgba(255, 255, 255, 0.9) !important; /* לבן עם 90% אטימות */
+    backdrop-filter: blur(8px); /* טשטוש עדין של ה-GIF מאחורי הכרטיס */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+}
+
+/* מוודא שהכותרות על הרקע עצמו (מחוץ לכרטיסים) יהיו לבנות וקריאות */
+main > h1, .screen-header h1 {
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    padding: 10px;
+}
+
 
 /* --- עיצוב הבר העליון (NAVBAR) --- */
 .navbar {
@@ -15,7 +40,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px;
-    background-color: #62bacb; /* הסגול הכהה המקורי שלך */
+    background-color: #c1e6ed; /* הסגול הכהה המקורי שלך */
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
@@ -110,6 +135,32 @@ main {
     gap: 20px;
     flex-wrap: wrap;
     margin-top: 20px;
+}
+
+/* הטקסט "שלום אורח" והדיב שלו */
+#welcome-message p {
+    color: #ffffff; /* לבן נקי */
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* צל כדי שיבלוט על הכוכבים */
+    margin-bottom: 5px;
+}
+
+/* הטקסט "קדימה להתאמן!!!" שמופיע אחרי כרטיס הלמידה */
+#home-screen > p {
+    color: #fbfbfb; /* זהב עדין - נראה מעולה על רקע כחול כהה/לילה */
+    font-size: 1.5rem;
+    font-weight: 900; /* מודגש מאוד */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.9);
+    margin-top: 10px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+/* מוודא שהכותרת הראשית (H1) גם בהירה */
+#home-screen h1 {
+    color: #ffffff;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
 }
 
 .level-card {
@@ -229,7 +280,7 @@ main {
     gap: 4px;
 }
 
-.letter { color: #444; transition: color 0.2s; }
+.letter { color: #e5e0e0; transition: color 0.2s; }
 .letter.correct { color: #2ecc71; }
 .letter.wrong { color: #e74c3c; }
 .letter.active { border-bottom: 3px solid #6a5acd; }
@@ -706,7 +757,14 @@ main {
     background-color: #bdc3c7 !important; /* צבע אפור אחיד */
     color: #7f8c8d !important;
     cursor: not-allowed !important;
-    opacity: 0.6;
-    box-shadow: none !important;
-    transform: none !important;
+    opacity: 0.9;
+    filter: grayscale(100%); /* הופך את כל הצבעים לאפור */
+    box-shadow: none !important; /* מסיר הילה או צל של כפתור פעיל */
+    transform: scale(0.95); /* מקטין אותו מעט כדי להדגיש שהוא לא פעיל */
+}
+
+/* ביטול אפקט המעבר (Hover) על שלבים נעולים */
+.locked-level:hover {
+    transform: scale(0.95) !important;
+    background-color: #2c3e50 !important;
 }

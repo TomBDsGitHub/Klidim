@@ -69,6 +69,10 @@ function nextSentence() {
 }
 
 window.addEventListener('keydown', (e) => {
+    // בדיקה אם המקש הוא רווח ואם אנחנו בתוך משחק פעיל
+    if (e.code === "Space") {
+        e.preventDefault(); // זה השורה שמונעת את הקפיצה למטה!
+    }
     // אם המשחק לא פעיל או שהלחיצה היא מקש מערכת (כמו Alt/Shift)
     if (!hardActive) return;
     if (e.key.length > 1 && e.key !== " ") return;
