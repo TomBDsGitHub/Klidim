@@ -36,7 +36,9 @@ const DB = {
                     studyBestScore: 0,
                     studyBestAcc: 0,
                     records: { easy: 0, medium: 0, hard: 0 },
-                    accuracy: { easy: 0, medium: 0, hard: 0 }
+                    accuracy: { easy: 0, medium: 0, hard: 0 },
+                    gameCounts: { easy: 0, medium: 0, hard: 0 }, // כמה פעמים שיחק בכל רמה
+                    studyLevelAttempts: {} // אובייקט שישמור כמה פעמים שיחק בכל שלב (למשל {"1": 5, "2": 3})
                 };
                 localStorage.setItem('usersDB', JSON.stringify(users));
                 resolve(users[username]);
@@ -57,39 +59,49 @@ const DB = {
     },
 
     async saveGameRecord(username, mode, score, accuracy) {
-        if (accuracy < 80) return; // לא שומרים אם הדיוק נמוך מ-80%
-
         const users = JSON.parse(localStorage.getItem('usersDB')) || {};
-        if (users[username]) {
-            if (score > users[username].records[mode]) {
-                users[username].records[mode] = score;
-                users[username].accuracy[mode] = accuracy;
-                localStorage.setItem('usersDB', JSON.stringify(users));
+        const user = users[username];
+        if (!user) return;
+
+        // 1. עדכון סטטיסטיקה (קורה תמיד, גם אם הדיוק נמוך!)
+        if (!user.gameCounts) user.gameCounts = { easy: 0, medium: 0, hard: 0 }; // הגנה למשתמשים ישנים
+        user.gameCounts[mode]++;
+
+        // 2. עדכון שיא (רק אם עומד בתנאי הדיוק)
+        if (accuracy >= 80) {
+            if (score > (user.records[mode] || 0)) {
+                user.records[mode] = score;
+                user.accuracy[mode] = accuracy;
             }
         }
+
+        localStorage.setItem('usersDB', JSON.stringify(users));
     },
 
     async updateStudyLevel(username, currentLevelPlaying, score, accuracy) {
         const users = JSON.parse(localStorage.getItem('usersDB')) || {};
         const user = users[username];
-        
-        if (user) {
-            // שמירת שיא לשלב הנוכחי אם הוא טוב יותר
-            if (score > user.studyBestScore) {
-                user.studyBestScore = score;
-                user.studyBestAcc = accuracy;
-            }
+        if (!user) return;
 
-            // פתיחת השלב הבא אם עמדנו בתנאים
-            if (score >= 35 && accuracy >= 80 && currentLevelPlaying === user.studyLevel) {
-                user.studyLevel += 1;
-                user.studyBestScore = 0; // איפוס השיא לשלב החדש שנפתח
-                user.studyBestAcc = 0;
-            }
-            
-            localStorage.setItem('usersDB', JSON.stringify(users));
-            return user.studyLevel;
+        // 1. עדכון סטטיסטיקת ניסיונות לשלב (למשל: כמה פעמים ניסה את שלב 3)
+        if (!user.studyLevelAttempts) user.studyLevelAttempts = {};
+        user.studyLevelAttempts[currentLevelPlaying] = (user.studyLevelAttempts[currentLevelPlaying] || 0) + 1;
+
+        // 2. שמירת שיא לשלב הנוכחי
+        if (score > (user.studyBestScore || 0)) {
+            user.studyBestScore = score;
+            user.studyBestAcc = accuracy;
         }
+
+        // 3. בדיקת מעבר שלב
+        if (score >= 35 && accuracy >= 80 && currentLevelPlaying === user.studyLevel) {
+            user.studyLevel += 1;
+            user.studyBestScore = 0;
+            user.studyBestAcc = 0;
+        }
+        
+        localStorage.setItem('usersDB', JSON.stringify(users));
+        return user.studyLevel;
     },
 
     async getUserData(username) {
@@ -121,6 +133,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 });
+
+async function printAdminStats() {
+    const users = await DB.getAllUsers();
+    
+    let totalGames = 0;
+    const levelPopularity = { easy: 0, medium: 0, hard: 0 };
+    const stuckPoints = {};
+
+    users.forEach(u => {
+        if (u.gameCounts) {
+            levelPopularity.easy += u.gameCounts.easy || 0;
+            levelPopularity.medium += u.gameCounts.medium || 0;
+            levelPopularity.hard += u.gameCounts.hard || 0;
+            totalGames += (u.gameCounts.easy + u.gameCounts.medium + u.gameCounts.hard);
+        }
+        stuckPoints[`שלב ${u.studyLevel}`] = (stuckPoints[`שלב ${u.studyLevel}`] || 0) + 1;
+    });
+
+    console.log(`%c --- דוח סטטיסטיקה למנהל (${totalGames} משחקים) --- `, "color: white; background: #2c3e50; font-weight: bold; padding: 5px;");
+    
+    console.log("📊 פופולריות רמות:");
+    console.table(levelPopularity); // יציג טבלה של קל/בינוני/קשה
+
+    console.log("📍 התפלגות משתמשים לפי שלבים:");
+    console.table(stuckPoints); // יציג כמה משתמשים יש בכל שלב
+}
+
+// הרצה:
+printAdminStats();
 
 const LETTER_LIST = [
     "א", 
