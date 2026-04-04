@@ -9,6 +9,30 @@
 </head>
 <body>
 
+    <script type="module">
+        // 1. ייבוא הספריות של Firebase ישירות מהרשת
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // 2. הגדרות החיבור (מה שהעתקת משלב 1)
+        const firebaseConfig = {
+            apiKey: "AIzaSy...", 
+            authDomain: "your-app.firebaseapp.com",
+            databaseURL: "https://your-app.firebaseio.com",
+            projectId: "your-app",
+            storageBucket: "your-app.appspot.com",
+            messagingSenderId: "...",
+            appId: "..."
+        };
+
+        // 3. אתחול המערכת
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // 4. הפיכת הפונקציות לזמינות בשאר הקוד (כדי שנוכל להשתמש בהן ב-DB.js)
+        window.fb = { database, ref, set, get, child, update };
+    </script>
+
     <nav class="navbar">
         <div class="logo-wrapper" onclick="backToHome()">
             <img src="LOGO.png" alt="קלידים לוגו" class="nav-logo-img">
