@@ -32,7 +32,8 @@ function showScreen(screenId) {
         'hard-screen', 
         'profile-screen', 
         'study-screen',
-        'level-play-screen'
+        'level-play-screen',
+        'leaderboard-screen'
     ];
 
     screens.forEach(id => {
@@ -51,6 +52,9 @@ function showScreen(screenId) {
             target.classList.remove('hidden');
             resetScreenToInitialState(screenId);
         }
+    }
+    if (screenId === 'leaderboard-screen') {
+        updateLeaderboards(); // טעינת הטבלאות
     }
     if (screenId === 'theory-screen') {
         createKeyboard('learning-keyboard', 'learning'); // מצב למידה
@@ -311,4 +315,58 @@ function logout() {
     // document.getElementById('main-profile-btn').classList.add('hidden');
     // document.getElementById('sidebar-login-btn').classList.remove('hidden');
     // document.getElementById('sidebar-profile-btn').classList.add('hidden');
+}
+
+async function updateLeaderboards() {
+    try {
+        // שלב 1: קבלת כל המשתמשים מהדאטה-בייס
+        const allUsers = await DB.getAllUsers(); 
+        
+        // הגנה: מוודאים שזה מערך. אם זה אובייקט (כמו ב-LocalStorage), נהפוך אותו למערך
+        const usersArray = Array.isArray(allUsers) ? allUsers : Object.values(allUsers);
+        
+        const levels = ['easy', 'medium', 'hard'];
+        
+        levels.forEach(level => {
+            const listElement = document.getElementById(`leaderboard-${level}`);
+            if (!listElement) return; // הגנה למקרה שהאלמנט חסר ב-HTML
+
+            // שלב 2: סינון ומיון
+            const topUsers = usersArray
+                .filter(user => user && user.records && user.records[level] > 0) // רק מי שיש לו שיא חיובי
+                .sort((a, b) => b.records[level] - a.records[level])    // מיון מהגבוה לנמוך
+                .slice(0, 5); // 5 הראשונים
+                
+            listElement.innerHTML = ''; // ניקוי הרשימה
+            
+            if (topUsers.length === 0) {
+                listElement.innerHTML = '<li>אין נתונים עדיין</li>';
+                return;
+            }
+
+            // שלב 3: בניית ה-HTML של הרשימה
+            topUsers.forEach((user, index) => {
+                const li = document.createElement('li');
+                li.className = 'leaderboard-item';
+                
+                if (user.username === getCurrentUser()) {
+                    li.classList.add('is-current-user');
+                }
+
+                li.innerHTML = `
+                    <span class="rank">${index + 1}.</span>
+                    <span class="name">${user.username}</span>
+                    <span class="score">${user.records[level]}</span>
+                `;
+                listElement.appendChild(li);
+            });
+        });
+    } catch (error) {
+        console.error("שגיאה בטעינת טבלת מובילים:", error);
+        // נציג הודעת שגיאה במסך במקום שייתקע על "טוען"
+        ['easy', 'medium', 'hard'].forEach(level => {
+            const listElement = document.getElementById(`leaderboard-${level}`);
+            if (listElement) listElement.innerHTML = '<li style="color:red;">שגיאה בטעינה</li>';
+        });
+    }
 }

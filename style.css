@@ -768,3 +768,54 @@ main {
     transform: scale(0.95) !important;
     background-color: #2c3e50 !important;
 }
+
+/* עיצוב השורה - גם לכותרת וגם לנתונים */
+.leaderboard-header-row, 
+.leaderboard-item {
+    display: grid;
+    /* הגדרת העמודות: 40px לדירוג, גמיש לשם, ו-70px לניקוד */
+    grid-template-columns: 60px 1fr 90px; 
+    align-items: center;
+    padding: 10px 5px;
+    border-bottom: 1px solid #eee;
+    text-align: right; /* יישור טקסט לימין (עברית) */
+}
+
+/* כותרת הטבלה */
+.leaderboard-header-row {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #7f8c8d;
+    background-color: #f8f9fa;
+    border-radius: 5px 5px 0 0;
+}
+
+/* עמודת הניקוד - נצמיד אותה לשמאל כדי שתהיה רחוקה מהשם */
+.leaderboard-item .score, 
+.leaderboard-header-row span:last-child {
+    text-align: left;
+    font-weight: bold;
+    color: #27ae60;
+}
+
+.leaderboard-item .name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* קיצור שמות ארוכים מדי עם ... */
+    padding-right: 10px;
+}
+
+.leaderboard-item .rank {
+    font-weight: bold;
+    color: #e67e22;
+}
+
+/* הסרת הקו התחתון מהאלמנט האחרון ברשימה */
+.leaderboard-list li:last-child {
+    border-bottom: none;
+}
+
+/* כתר למקום הראשון */
+.leaderboard-item:first-child .rank::after {
+    content: " 👑";
+}

@@ -19,6 +19,7 @@
 
     <nav id="sidebar" class="sidebar">
         <a href="#" onclick="backToHome()">מסך הבית</a>
+        <a href="#" onclick="showScreen('leaderboard-screen')"><i class="fas fa-trophy"></i> טבלת מובילים</a>
         <a href="#" onclick="showScreen('theory-screen')">תיאוריה</a>
         <a href="#" onclick="showScreen('study-screen')">מרכז הלמידה</a>
         <a href="#" id="sidebar-profile-btn" class="hidden" onclick="showScreen('profile-screen')">אזור אישי</a>
@@ -264,6 +265,53 @@
                     <h3>רמה קשה</h3>
                     <p>שיא: <span id="record-hard">0</span> תווים</p>
                     <p>דיוק: <span id="acc-hard">0</span>%</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="leaderboard-screen" class="hidden">
+        <div class="profile-container"> <header class="profile-header">
+                <div class="user-avatar">🏆</div>
+                <h2>לוח האלופים</h2>
+                <p>הכירו את המקלידים המהירים ביותר באתר</p>
+            </header>
+
+            <div class="leaderboards-grid">
+                <div class="leaderboard-card">
+                    <h4><i class="fas fa-feather"></i> רמה קלה</h4>
+                    <div class="leaderboard-header-row">
+                        <span>דירוג</span>
+                        <span>שם</span>
+                        <span>אותיות</span>
+                    </div>
+                    <ul id="leaderboard-easy" class="leaderboard-list">
+                        <li>טוען נתונים...</li>
+                    </ul>
+                </div>
+                
+                <div class="leaderboard-card">
+                    <h4><i class="fas fa-bolt"></i> רמה בינונית</h4>
+                    <div class="leaderboard-header-row">
+                        <span>דירוג</span>
+                        <span>שם</span>
+                        <span>נקודות</span>
+                    </div>
+                    <ul id="leaderboard-medium" class="leaderboard-list">
+                        <li>טוען נתונים...</li>
+                    </ul>
+                </div>
+
+                <div class="leaderboard-card">
+                    <h4><i class="fas fa-fire"></i> רמה קשה</h4>
+                    <div class="leaderboard-header-row">
+                        <span>דירוג</span>
+                        <span>שם</span>
+                        <span>תווים</span>
+                    </div>
+                    <ul id="leaderboard-hard" class="leaderboard-list">
+                        <li>טוען נתונים...</li>
+                    </ul>
                 </div>
             </div>
         </div>
