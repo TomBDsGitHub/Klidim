@@ -138,23 +138,13 @@ function closeLoginModal() {
     document.getElementById('login-modal').classList.add('hidden');
 }
 
-function login() {
-    const username = document.getElementById('username-input').value;
-    if (username.trim() === "") {
-        alert("נא להזין שם משתמש");
-        return;
-    }
-
-    // שמירה ב-LocalStorage
-    localStorage.setItem('currentUser', username);
-    updateUIForUser(username);
-    closeLoginModal();
-}
-
 function logout() {
+    setCurrentUser(null);
+    sessionStorage.removeItem('activeUser');
     localStorage.removeItem('currentUser');
-    updateUIForUser(null);
-    showScreen('home-screen');
+    
+    // במקום רענון דף, אפשר פשוט לעדכן UI (אבל רענון זה הכי בטוח למניעת שאריות מידע)
+    location.reload(); 
 }
 
 function updateUIForUser(username) {
@@ -269,22 +259,27 @@ async function submitAuth() {
     }
 }
 
+// ui.js - עדכון פונקציית סיום ההתחברות
 function finishLogin(username) {
-    currentUser = username;
-    sessionStorage.setItem('activeUser', username); // שומרים לכל אורך הסשן
-    closeLoginModal();
-    document.getElementById('welcome-message').innerHTML = `<p>שלום ${username}!</p>`;
-    document.getElementById('profile-username').innerText = `שלום, ${username}`;
+    setCurrentUser(username); // קריאה לפונקציה מ-database.js
     
-    // הסתרת מודל התחברות אם הוא פתוח
-    closeLoginModal();
+    // שמירה עקבית בשני המקומות כדי למנוע באגים של "חצי מחובר"
+    sessionStorage.setItem('activeUser', username);
+    localStorage.setItem('currentUser', username); 
 
-    // הצגת כפתורי משתמש
-    document.getElementById('main-login-btn').classList.add('hidden');
-    document.getElementById('main-profile-btn').classList.remove('hidden');
-    document.getElementById('sidebar-login-btn').classList.add('hidden');
-    document.getElementById('sidebar-profile-btn').classList.remove('hidden');
+    closeLoginModal();
     
+    // עדכון אלמנטים במסך
+    const welcomeArea = document.getElementById('welcome-message');
+    if (welcomeArea) welcomeArea.innerHTML = `<p>שלום ${username}!</p>`;
+    
+    const profileName = document.getElementById('profile-username');
+    if (profileName) profileName.innerText = `שלום, ${username}`;
+
+    // עדכון כפתורי תפריט
+    updateUIForUser(username);
+    
+    // טעינת נתוני פרופיל מה-Firebase
     updateProfileUI();
 }
 
@@ -303,18 +298,6 @@ async function updateProfileUI() {
     document.getElementById('acc-medium').innerText = data.accuracy.medium;
     document.getElementById('record-hard').innerText = data.records.hard;
     document.getElementById('acc-hard').innerText = data.accuracy.hard;
-}
-
-function logout() {
-    setCurrentUser(null);
-    sessionStorage.removeItem('activeUser'); // מוחק את החיבור מהזיכרון
-    location.reload(); // הדרך הכי נקייה להתנתק היא לרענן את הדף
-    // showScreen('home-screen');
-    // document.getElementById('welcome-message').innerHTML = `<p>שלום אורח</p>`;
-    // document.getElementById('main-login-btn').classList.remove('hidden');
-    // document.getElementById('main-profile-btn').classList.add('hidden');
-    // document.getElementById('sidebar-login-btn').classList.remove('hidden');
-    // document.getElementById('sidebar-profile-btn').classList.add('hidden');
 }
 
 async function updateLeaderboards() {

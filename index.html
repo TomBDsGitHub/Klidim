@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
+    <link rel="canonical" href="https://ma-klidim.co.il/">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>קלידים - הקלדה עיוורת</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="keyboard.css">
+    <meta property="og:image" content="LOGO.png">
+    <link rel="icon" href="enter_icon.png" type="image/png">
+
+    <meta name="description" content="משחק הקלדה מהירה בעברית ובאנגלית - שפרו את מהירות ההקלדה שלכם בחינם!">
+
+    <meta name="keywords" content="הקלדה עיוורת, הקלדה עיוורת בעברית, הקלדה מהירה, הקלדה מהירה בעברית, משחק הקלדה, קלידים, klidim, ma-klidim, maklidim">
+
+    <meta property="og:title" content="Fast Typing - אתגר ההקלדה">
+    <meta property="og:description" content="כמה מילים בדקה אתם מצליחים להקליד? בואו לבדוק!">
 </head>
 <body>
 
@@ -16,14 +26,16 @@
 
         // 2. הגדרות החיבור (מה שהעתקת משלב 1)
         const firebaseConfig = {
-            apiKey: "AIzaSy...", 
-            authDomain: "your-app.firebaseapp.com",
-            databaseURL: "https://your-app.firebaseio.com",
-            projectId: "your-app",
-            storageBucket: "your-app.appspot.com",
-            messagingSenderId: "...",
-            appId: "..."
+            apiKey: "AIzaSyBM0gtw_0xMpQZeEWVE4o4PhJfpa54AhIQ",
+            authDomain: "klidim.firebaseapp.com",
+            databaseURL: "https://klidim-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "klidim",
+            storageBucket: "klidim.firebasestorage.app",
+            messagingSenderId: "1036296220559",
+            appId: "1:1036296220559:web:12c3a22d1b777d55a465fa",
+            measurementId: "G-DRK0GR3MKV"
         };
+
 
         // 3. אתחול המערכת
         const app = initializeApp(firebaseConfig);
@@ -31,6 +43,7 @@
 
         // 4. הפיכת הפונקציות לזמינות בשאר הקוד (כדי שנוכל להשתמש בהן ב-DB.js)
         window.fb = { database, ref, set, get, child, update };
+        console.log("Firebase connected successfully!");
     </script>
 
     <nav class="navbar">

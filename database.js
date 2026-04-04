@@ -20,117 +20,138 @@ function getLoginMode() {
 }
 
 const DB = {
-    // הדמיית פניות לשרת בעזרת Promise
+    // --- 1. הרשמה (עם בדיקות אורך) ---
     async register(username, password) {
-        return new Promise((resolve, reject) => {
-            const users = JSON.parse(localStorage.getItem('usersDB')) || {};
-            if (users[username]) {
-                reject("שם המשתמש כבר תפוס!");
-            } else if (username.length < 3 || password.length < 4) {
-                reject("שם משתמש לפחות 3 תווים, סיסמה לפחות 4.");
-            } else {
-                users[username] = {
-                    username: username,
-                    password: password,
-                    studyLevel: 1,
-                    studyBestScore: 0,
-                    studyBestAcc: 0,
-                    records: { easy: 0, medium: 0, hard: 0 },
-                    accuracy: { easy: 0, medium: 0, hard: 0 },
-                    gameCounts: { easy: 0, medium: 0, hard: 0 }, // כמה פעמים שיחק בכל רמה
-                    studyLevelAttempts: {} // אובייקט שישמור כמה פעמים שיחק בכל שלב (למשל {"1": 5, "2": 3})
-                };
-                localStorage.setItem('usersDB', JSON.stringify(users));
-                resolve(users[username]);
-            }
-        });
-    },
-
-    async login(username, password) {
-        return new Promise((resolve, reject) => {
-            const users = JSON.parse(localStorage.getItem('usersDB')) || {};
-            const user = users[username];
-            if (user && user.password === password) {
-                resolve(user);
-            } else {
-                reject("שם משתמש או סיסמה שגויים.");
-            }
-        });
-    },
-
-    async saveGameRecord(username, mode, score, accuracy) {
-        const users = JSON.parse(localStorage.getItem('usersDB')) || {};
-        const user = users[username];
-        if (!user) return;
-
-        // 1. עדכון סטטיסטיקה (קורה תמיד, גם אם הדיוק נמוך!)
-        if (!user.gameCounts) user.gameCounts = { easy: 0, medium: 0, hard: 0 }; // הגנה למשתמשים ישנים
-        user.gameCounts[mode]++;
-
-        // 2. עדכון שיא (רק אם עומד בתנאי הדיוק)
-        if (accuracy >= 80) {
-            if (score > (user.records[mode] || 0)) {
-                user.records[mode] = score;
-                user.accuracy[mode] = accuracy;
-            }
+        // בדיקת תקינות מקומית (חוסך פנייה מיותרת לשרת)
+        if (username.length < 3 || password.length < 4) {
+            throw "שם משתמש לפחות 3 תווים, סיסמה לפחות 4.";
         }
 
-        localStorage.setItem('usersDB', JSON.stringify(users));
-    },
-
-    async updateStudyLevel(username, currentLevelPlaying, score, accuracy) {
-        const users = JSON.parse(localStorage.getItem('usersDB')) || {};
-        const user = users[username];
-        if (!user) return;
-
-        // 1. עדכון סטטיסטיקת ניסיונות לשלב (למשל: כמה פעמים ניסה את שלב 3)
-        if (!user.studyLevelAttempts) user.studyLevelAttempts = {};
-        user.studyLevelAttempts[currentLevelPlaying] = (user.studyLevelAttempts[currentLevelPlaying] || 0) + 1;
-
-        // 2. שמירת שיא לשלב הנוכחי
-        if (score > (user.studyBestScore || 0)) {
-            user.studyBestScore = score;
-            user.studyBestAcc = accuracy;
-        }
-
-        // 3. בדיקת מעבר שלב
-        if (score >= 35 && accuracy >= 80 && currentLevelPlaying === user.studyLevel) {
-            user.studyLevel += 1;
-            user.studyBestScore = 0;
-            user.studyBestAcc = 0;
-        }
+        const userRef = fb.ref(fb.database, 'users/' + username);
+        const snapshot = await fb.get(userRef);
         
-        localStorage.setItem('usersDB', JSON.stringify(users));
-        return user.studyLevel;
+        if (snapshot.exists()) {
+            throw "שם המשתמש כבר תפוס!";
+        }
+
+        const newUser = {
+            username: username,
+            password: password,
+            studyLevel: 1,
+            studyBestScore: 0,
+            studyBestAcc: 0,
+            records: { easy: 0, medium: 0, hard: 0 },
+            accuracy: { easy: 0, medium: 0, hard: 0 },
+            gameCounts: { easy: 0, medium: 0, hard: 0 },
+            studyLevelAttempts: {}
+        };
+
+        await fb.set(userRef, newUser);
+        return newUser;
     },
 
+    // --- 2. התחברות ---
+    async login(username, password) {
+        const userRef = fb.ref(fb.database, 'users/' + username);
+        const snapshot = await fb.get(userRef);
+        
+        if (snapshot.exists()) {
+            const user = snapshot.val();
+            if (user.password === password) {
+                return user;
+            }
+        }
+        throw "שם משתמש או סיסמה שגויים.";
+    },
+
+    // --- 3. שמירת תוצאה (עם מונה משחקים) ---
+    async saveGameRecord(username, mode, score, accuracy) {
+        const userRef = fb.ref(fb.database, 'users/' + username);
+        const snapshot = await fb.get(userRef);
+        if (!snapshot.exists()) return;
+
+        const user = snapshot.val();
+        const updates = {};
+
+        // עדכון מונה משחקים (תמיד קורה)
+        const currentCounts = user.gameCounts || { easy: 0, medium: 0, hard: 0 };
+        updates[`gameCounts/${mode}`] = (currentCounts[mode] || 0) + 1;
+
+        // עדכון שיא (דיוק 80%+)
+        if (accuracy >= 80) {
+            const best = (user.records && user.records[mode]) || 0;
+            if (score > best) {
+                updates[`records/${mode}`] = score;
+                updates[`accuracy/${mode}`] = accuracy;
+            }
+        }
+
+        return fb.update(userRef, updates);
+    },
+
+    // --- 4. עדכון שלב לימודי (עם מונה ניסיונות) ---
+    async updateStudyLevel(username, currentLevelPlaying, score, accuracy) {
+        const userRef = fb.ref(fb.database, 'users/' + username);
+        const snapshot = await fb.get(userRef);
+        if (!snapshot.exists()) return;
+
+        const user = snapshot.val();
+        const updates = {};
+
+        // עדכון ניסיונות לשלב
+        const attempts = user.studyLevelAttempts || {};
+        updates[`studyLevelAttempts/${currentLevelPlaying}`] = (attempts[currentLevelPlaying] || 0) + 1;
+
+        // שמירת שיא לשלב הנוכחי
+        if (score > (user.studyBestScore || 0)) {
+            updates['studyBestScore'] = score;
+            updates['studyBestAcc'] = accuracy;
+        }
+
+        // לוגיקת מעבר שלב
+        if (score >= 35 && accuracy >= 80 && currentLevelPlaying === user.studyLevel) {
+            updates['studyLevel'] = user.studyLevel + 1;
+            updates['studyBestScore'] = 0;
+            updates['studyBestAcc'] = 0;
+        }
+
+        await fb.update(userRef, updates);
+        
+        // החזרת הערך המעודכן
+        const newSnapshot = await fb.get(userRef);
+        return newSnapshot.val().studyLevel;
+    },
+
+    // --- 5. שליפת נתונים ---
     async getUserData(username) {
-        const users = JSON.parse(localStorage.getItem('usersDB')) || {};
-        return users[username];
+        const userRef = fb.ref(fb.database, 'users/' + username);
+        const snapshot = await fb.get(userRef);
+        return snapshot.exists() ? snapshot.val() : null;
     },
 
     async getAllUsers() {
-        // תיקון 1: שימוש ב-usersDB (עקביות עם שאר הפונקציות)
-        const usersData = JSON.parse(localStorage.getItem('usersDB')) || {};
-        // תיקון 2: החזרת המערך
-        return Object.values(usersData); 
+        const usersRef = fb.ref(fb.database, 'users');
+        const snapshot = await fb.get(usersRef);
+        return snapshot.exists() ? Object.values(snapshot.val()) : [];
     }
 };
 
-// כשמטעינים את האתר, בודקים אם מישהו כבר מחובר בזיכרון של הדפדפן
+// database.js - עדכון בלוק הטעינה
 document.addEventListener('DOMContentLoaded', async () => {
-    const savedUser = sessionStorage.getItem('activeUser');
+    // נבדוק גם ב-session וגם ב-local (כדי להיות בטוחים)
+    const savedUser = sessionStorage.getItem('activeUser') || localStorage.getItem('currentUser');
+    
     if (savedUser) {
-        window.currentUser = savedUser;
+        setCurrentUser(savedUser); // עדכון המשתנה הפנימי ב-database.js
         
-        // בדיקה אם הפונקציה קיימת לפני שמפעילים אותה
-        if (typeof finishLogin === 'function') {
-            finishLogin(savedUser);
-        } else {
-            console.warn("finishLogin לא נמצאה בטעינה, מנסה לעדכן UI ידנית");
-            // גיבוי למקרה ש-ui.js עוד לא מוכן
-            updateProfileUI(); 
-        }
+        // נחכה רגע קט שה-DOM והסקריפטים האחרים יסיימו להיטען
+        setTimeout(() => {
+            if (typeof finishLogin === 'function') {
+                finishLogin(savedUser);
+            } else if (typeof updateUIForUser === 'function') {
+                updateUIForUser(savedUser);
+            }
+        }, 100);
     }
 });
 
@@ -160,8 +181,22 @@ async function printAdminStats() {
     console.table(stuckPoints); // יציג כמה משתמשים יש בכל שלב
 }
 
-// הרצה:
-printAdminStats();
+// פונקציה שתבדוק אם המשתמש הוא אתה
+function showAdminButtonIfManager() {
+    const managerName = "Tom"; // כאן תכתוב את שם המשתמש שלך ב-Firebase
+    if (getCurrentUser() == managerName) {
+        console.log("%c Admin Mode: הקלד printAdminStats() כדי לראות נתונים", "color: #2ecc71; font-weight: bold;");
+        
+        // אופציונלי: יצירת כפתור פיזי שמופיע רק לך במסך הפרופיל
+        const adminBtn = document.createElement('button');
+        adminBtn.innerText = "📊 דוח מנהל";
+        adminBtn.className = "admin-only-btn"; // תוסיף לו עיצוב ב-CSS
+        adminBtn.onclick = printAdminStats;
+        document.getElementById('profile-screen').appendChild(adminBtn);
+    }
+}
+
+showAdminButtonIfManager();
 
 const LETTER_LIST = [
     "א", 
